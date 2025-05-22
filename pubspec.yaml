@@ -52,7 +52,7 @@ dependencies:
   flutter_tabler_icons:
   url_launcher: ^6.0.3
   share_plus: ^10.1.3
-  timeago: ^3.7.0
+  timeago: ^3.7.1
 
 
   # The following adds the Cupertino Icons font to your application.
