@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:news_app/common/widgets/custom_snackbar.dart';
+import 'package:news_app/features/home/model/headline_model.dart';
 import 'package:news_app/features/home/model/news_model.dart';
 
 import 'package:news_app/features/home/repository/home_repository.dart';
@@ -11,44 +12,62 @@ class HomeController extends GetxController implements GetxService {
 
   HomeController({required this.homeRepository});
 
-  bool _isLoading = false;
 
-  bool get isLoading => _isLoading;
 
-   List<NewsModel> _allNews = [];
 
-  List<NewsModel> get allNews=> _allNews;
 
   //listType all api like getData create same function
-  getAllNewsData() async {
-    _isLoading = true;
-    update();
-    Response response = await homeRepository.getAllNewsData();
-    if (response.statusCode == 200) {
-      //first data in map and data set in list
-      _allNews.addAll(
-        response.body["articles"]
-            .map<NewsModel>((data) => NewsModel.fromJson(data))
-            .toList(),
-      );
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
 
+  List<NewsModel> _allNews = [];
+  List<NewsModel> get allNews=>_allNews;
+
+  List <HeadlineModel> _allHeadline =[];
+  List<HeadlineModel> get allHeadline => _allHeadline;
+
+  getAllNewsData()async{
+    _isLoading =true;
+    update();
+    Response response =await homeRepository.getAllNewsData();
+    if(response.statusCode == 200){
+      _allNews.addAll(
+          response.body["articles"]
+              .map<NewsModel>((data) => NewsModel.fromJson(data))
+              .toList());
       /* //data set in loop structure
          for(var data in response.body["articles"]){
            _allNews.add(NewsModel.fromJson(data));
          }*/
-    } else{
-      showCustomSnackBar("Something is Wring, pls Try again");
+
+    }else{
+      showCustomSnackBar("Something is wrong! please try again");
     }
     _isLoading=false;
     update();
-
   }
 
+  getTopHeadlines()async{
+    _isLoading=true;
+    update();
+    Response response=await homeRepository.getTopHeadlines();
+    if(response.statusCode ==200){
+      _allHeadline.addAll(
+        response.body["articles"].map<HeadlineModel>((data) => HeadlineModel.fromJson(data)).toList()
+      );
+    }else{
+      showCustomSnackBar("Something is wrong! please try again");
+    }
+    _isLoading=false;
+    update();
+  }
 
   @override
   void onInit() {
     getAllNewsData();
+    getTopHeadlines();
     super.onInit();
-
   }
+
+
 }

@@ -16,8 +16,12 @@ class HomeRepository {
     return await apiClient.getData("top-headlines?sources=bbc-news&apiKey=${AppConstants.token}");
   }*/
 
-  Future<Response>  getAllNewsData({String ?search,sortBy,page,pageSize})async{
+  Future<Response>  getAllNewsData({String ?search, sortBy, page, pageSize})async{
     return await apiClient.getData("everything?q=${search??"all"}&sortBy=${sortBy??""}&apiKey=${AppConstants.token}&page=$page&pageSize=$pageSize");
+  }
+
+  Future<Response> getTopHeadlines()async{
+    return await apiClient.getData("top-headlines?country=us&apiKey=${AppConstants.token}");
   }
 
 }
