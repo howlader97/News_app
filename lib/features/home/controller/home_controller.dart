@@ -13,87 +13,104 @@ class HomeController extends GetxController implements GetxService {
 
   HomeController({required this.homeRepository});
 
+  final TextEditingController _searchController = TextEditingController();
 
-TextEditingController _searchController=TextEditingController();
-TextEditingController get searchController => _searchController;
-
+  TextEditingController get searchController => _searchController;
 
   //listType all api like getData create same function
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   bool _isSearch = false;
+
   bool get isSearch => _isSearch;
 
-  activeSearchButton(){
-    _isSearch =! _isSearch;
+  activeSearchButton() {
+    _isSearch = !_isSearch;
     update();
   }
 
   List<NewsModel> _allNews = [];
-  List<NewsModel> get allNews=>_allNews;
 
-  List <HeadlineModel> _allHeadline =[];
+  List<NewsModel> get allNews => _allNews;
+
+  List<HeadlineModel> _allHeadline = [];
+
   List<HeadlineModel> get allHeadline => _allHeadline;
 
-  int _page =1;
-  int _pageSize =10;
+  int _page = 1;
+  int _pageSize = 20;
 
-
-  getAllNewsData()async{
-    _isLoading =true;
+  Future<void> getAllNewsData() async {
+    _isLoading = true;
     update();
-    Response response =await homeRepository.getAllNewsData(
+    Response response = await homeRepository.getAllNewsData(
       page: _page,
       pageSize: _pageSize,
-      search: _searchController.text.isEmpty? "sports": _searchController.text.toString(),
+      search:
+          _searchController.text.isEmpty
+              ? "sports"
+              : _searchController.text.toString(),
       sortBy: selectedFilterValue,
     );
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       _allNews.addAll(
-          response.body["articles"]
-              .map<NewsModel>((data) => NewsModel.fromJson(data))
-              .toList());
+        response.body["articles"]
+            .map<NewsModel>((data) => NewsModel.fromJson(data))
+            .toList(),
+      );
       /* //data set in loop structure
          for(var data in response.body["articles"]){
            _allNews.add(NewsModel.fromJson(data));
          }*/
-
-    }else{
+    } else {
       showCustomSnackBar("Something is wrong! please try again");
     }
-    _isLoading=false;
+    _isLoading = false;
     update();
   }
 
-  getTopHeadlines()async{
-    _isLoading=true;
+  getTopHeadlines() async {
+    _isLoading = true;
     update();
-    Response response=await homeRepository.getTopHeadlines();
-    if(response.statusCode ==200){
+    Response response = await homeRepository.getTopHeadlines();
+    if (response.statusCode == 200) {
       _allHeadline.addAll(
-        response.body["articles"].map<HeadlineModel>((data) => HeadlineModel.fromJson(data)).toList()
+        response.body["articles"]
+            .map<HeadlineModel>((data) => HeadlineModel.fromJson(data))
+            .toList(),
       );
-    }else{
+    } else {
       showCustomSnackBar("Something is wrong! please try again");
     }
-    _isLoading=false;
+    _isLoading = false;
     update();
   }
+
   incrementNewsData() {
     _page++;
     update();
   }
 
-  String selectedFilterValue = "publishedAt";
+  String selectedFilterValue = "";
 
-  getFilterData(){
-    _page=1;
-    _allNews=[];
+  getFilterData() {
+    _page = 1;
+    _allNews = [];
     getAllNewsData();
   }
 
+  RefreshController refreshController = RefreshController(
+    initialRefresh: false,
+  );
 
+  void onRefresh() async {
+    _searchController.clear();
+    selectedFilterValue = "publishedAt";
+    getFilterData();
+    refreshController.refreshCompleted();
+  }
 
   @override
   void onInit() {
@@ -101,6 +118,4 @@ TextEditingController get searchController => _searchController;
     getTopHeadlines();
     super.onInit();
   }
-
-
 }

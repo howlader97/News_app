@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:news_app/common/widgets/custom_image.dart';
 import 'package:news_app/utils/app_color.dart';
 import 'package:news_app/utils/styles.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../model/news_model.dart';
 
@@ -50,15 +51,24 @@ class DetailsNewsScreen extends StatelessWidget {
                   'Description',
                   style: TextStyle(color: Colors.black, fontSize: 14),
                 ),
-                Text(
-                  "${fullNews.description}",
-                  style: robotoBold.copyWith(color: AppColors.black),
+
+                InkWell(
+                  onTap: () {},
+                  child: Text(
+                    "${fullNews.description}",
+                    style: robotoBold.copyWith(color: AppColors.black),
+                  ),
                 ),
                 const SizedBox(height: 5),
-                Text(
-                  "${fullNews.url}",
-                  style: robotoBold.copyWith(color: AppColors.appBarColor),
+
+                InkWell(
+                  onTap: () {},
+                  child: Text(
+                    "${fullNews.url}",
+                    style: robotoBold.copyWith(color: AppColors.appBarColor),
+                  ),
                 ),
+
                 const SizedBox(height: 5),
                 Align(
                   alignment: Alignment.bottomRight,
@@ -73,5 +83,16 @@ class DetailsNewsScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _launchInWebView(Uri url) async {
+    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
+    await launchUrl(launchUri);
   }
 }
