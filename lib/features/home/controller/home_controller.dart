@@ -47,6 +47,7 @@ TextEditingController get searchController => _searchController;
       page: _page,
       pageSize: _pageSize,
       search: _searchController.text.isEmpty? "sports": _searchController.text.toString(),
+      sortBy: selectedFilterValue,
     );
     if(response.statusCode == 200){
       _allNews.addAll(
@@ -83,6 +84,15 @@ TextEditingController get searchController => _searchController;
     _page++;
     update();
   }
+
+  String selectedFilterValue = "publishedAt";
+
+  getFilterData(){
+    _page=1;
+    _allNews=[];
+    getAllNewsData();
+  }
+
 
 
   @override

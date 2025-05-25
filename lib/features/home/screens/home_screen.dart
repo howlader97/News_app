@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
+import 'package:news_app/common/widgets/custom_drop_down_button.dart';
 import 'package:news_app/common/widgets/custom_image.dart';
 import 'package:news_app/common/widgets/custom_text_field.dart';
 import 'package:news_app/features/home/controller/home_controller.dart';
@@ -79,14 +80,32 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   homeController.isSearch
-                      ? CustomTextField(
-                        controller: homeController.searchController,
-                        hintText: 'Search here',
-                        prefixIcon: Icons.search,
-                        onComplete: () {
-                          homeController.allNews.clear();
-                          homeController.getAllNewsData();
-                        },
+                      ? Column(
+                        children: [
+                          CustomTextField(
+                            controller: homeController.searchController,
+                            hintText: 'Search here',
+                            prefixIcon: Icons.search,
+                            onComplete: () {
+                              homeController.allNews.clear();
+                              homeController.getAllNewsData();
+                            },
+                          ),
+                          const SizedBox(height: 5),
+                          CustomDropdownButton(
+                            items: const [
+                              'relevancy',
+                              'popularity',
+                              'publishedAt',
+                            ],
+                            hintText: 'Select',
+                            onChanged: (value) {
+                              homeController.selectedFilterValue =
+                                  value.toString();
+                              homeController.getFilterData();
+                            },
+                          ),
+                        ],
                       )
                       : const SizedBox(),
                   const SizedBox(height: 18),
@@ -131,8 +150,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context, index) {
                         var value = homeController.allNews[index];
                         return InkWell(
-                          onTap: (){
-                            Get.to( DetailsNewsScreen(fullNews: homeController.allNews[index],));
+                          onTap: () {
+                            Get.to(
+                              DetailsNewsScreen(
+                                fullNews: homeController.allNews[index],
+                              ),
+                            );
                           },
                           child: Card(
                             elevation: 2,
@@ -154,19 +177,30 @@ class _HomeScreenState extends State<HomeScreen> {
                                       children: [
                                         Text(
                                           "${value.title}",
-                                          style: robotoMedium.copyWith(color: AppColors.black,),
+                                          style: robotoMedium.copyWith(
+                                            color: AppColors.black,
+                                          ),
                                         ),
                                         Text(
                                           "${value.content}",
-                                          style: robotoMedium.copyWith(color: AppColors.black.withAlpha(150)),
+                                          style: robotoMedium.copyWith(
+                                            color: AppColors.black.withAlpha(
+                                              150,
+                                            ),
+                                          ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         Align(
                                           alignment: Alignment.bottomRight,
                                           child: Text(
                                             timeago.format(
-                                              DateTime.parse(value.publishedAt!),
-                                            ),style: robotoMedium.copyWith(color: AppColors.green),
+                                              DateTime.parse(
+                                                value.publishedAt!,
+                                              ),
+                                            ),
+                                            style: robotoMedium.copyWith(
+                                              color: AppColors.green,
+                                            ),
                                           ),
                                         ),
                                       ],
