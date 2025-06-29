@@ -5,12 +5,15 @@ import 'package:news_app/utils/app_color.dart';
 import 'package:news_app/utils/styles.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../model/headline_model.dart';
 import '../model/news_model.dart';
 
 class DetailsNewsScreen extends StatelessWidget {
-  const DetailsNewsScreen({super.key, required this.fullNews});
+  const DetailsNewsScreen({super.key, required this.fullNews,});
 
   final NewsModel fullNews;
+
+
 
   @override
   Widget build(BuildContext context) {
