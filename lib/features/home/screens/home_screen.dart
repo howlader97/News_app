@@ -20,7 +20,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -204,9 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             alignment: Alignment.bottomRight,
                                             child: Text(
                                               timeago.format(
-                                                DateTime.parse(
-                                                  value.publishedAt!,
-                                                ),
+                                                DateTime.parse(value.publishedAt!),
                                               ),
                                               style: robotoMedium.copyWith(
                                                 color: AppColors.green,
